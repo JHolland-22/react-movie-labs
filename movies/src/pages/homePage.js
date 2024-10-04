@@ -6,6 +6,8 @@ import FilterCard from "../components/filterMoviesCard";
 
 const HomePage = (props) => {
   const [movies, setMovies] = useState([]);
+  const [nameFilter, setNameFilter] = useState(""); // State for the name filter
+  const [genreFilter, setGenreFilter] = useState("0"); // State for the genre filter
 
   useEffect(() => {
     fetch(
@@ -21,18 +23,40 @@ const HomePage = (props) => {
       });
   }, []);
 
+  const genreId = Number(genreFilter);
+
+  // Compute the displayed movies based on filters
+  let displayedMovies = movies
+    .filter((m) => {
+      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
+    })
+    .filter((m) => {
+      return genreId > 0 ? m.genre_ids.includes(genreId) : true;
+    });
+
+  // Function to handle user input changes
+  const handleChange = (type, value) => {
+    if (type === "name") setNameFilter(value);
+    else setGenreFilter(value);
+  };
+
   return (
     <Grid container>
       <Grid size={12}>
         <Header title={"Home Page"} />
       </Grid>
-      <Grid container sx={{flex: "500px 1 0"}}>
-        <Grid key="find" size={{xs: 12, sm: 6, md: 4, lg: 3, xl: 2}} sx={{padding: "20px"}}>
-          <FilterCard />
+      <Grid container sx={{ flex: "500px 1 0" }}>
+        <Grid key="find" size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} sx={{ padding: "20px" }}>
+          <FilterCard 
+            onUserInput={handleChange} // Pass the handleChange function
+            titleFilter={nameFilter} // Pass the current name filter
+            genreFilter={genreFilter} // Pass the current genre filter
+          />
         </Grid>
-        <MovieList movies={movies}></MovieList>
+        <MovieList movies={displayedMovies} /> {/* Use displayedMovies for filtering */}
       </Grid>
     </Grid>
   );
 };
+
 export default HomePage;
