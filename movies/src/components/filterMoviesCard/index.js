@@ -11,6 +11,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import img from '../../images/pexels-dziana-hasanbekava-5480827.jpg';
 
+// Define styling for form control
 const formControl = {
   margin: 1,
   minWidth: 220,
@@ -18,38 +19,40 @@ const formControl = {
 };
 
 export default function FilterMoviesCard(props) {
-  // State for genres
+  // State for genres, including the 'All' option with id '0'
   const [genres, setGenres] = useState([{ id: '0', name: "All" }]);
 
-  // Fetch genres from the API
+  // Fetch genres from the API and populate the genre dropdown
   useEffect(() => {
     fetch(
       "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
         process.env.REACT_APP_TMDB_KEY
     )
-      .then(res => res.json())
-      .then(json => {
-        // console.log(json.genres);
-        return json.genres;
+      .then((res) => res.json())
+      .then((json) => {
+        return json.genres;  // Extract genres array from the response
       })
-      .then(apiGenres => {
-        setGenres([genres[0], ...apiGenres]);
+      .then((apiGenres) => {
+        setGenres([genres[0], ...apiGenres]); // Add API genres to state
+      })
+      .catch((error) => {
+        console.error("Error fetching genres:", error); // Handle any errors
       });
       // eslint-disable-next-line
   }, []);
 
-  // Event handlers
+  // Function to handle changes in the search field and genre selection
   const handleChange = (e, type, value) => {
     e.preventDefault();
-    // Handle changes (to be completed later)
+    props.onUserInput(type, value); // Pass changes to the parent component
   };
 
-  const handleTextChange = e => {
-    handleChange(e, "name", e.target.value);
+  const handleTextChange = (e) => {
+    handleChange(e, "name", e.target.value); // Handle name filter change
   };
 
-  const handleGenreChange = e => {
-    handleChange(e, "genre", e.target.value);
+  const handleGenreChange = (e) => {
+    handleChange(e, "genre", e.target.value); // Handle genre filter change
   };
 
   return (
@@ -70,8 +73,8 @@ export default function FilterMoviesCard(props) {
           label="Search field"
           type="search"
           variant="filled"
-          value={props.titleFilter} // Make sure to pass this prop
-          onChange={handleTextChange} // Add the event handler
+          value={props.titleFilter} // Pass the current title filter
+          onChange={handleTextChange} // Handle changes in the text field
         />
         <FormControl sx={{ ...formControl }}>
           <InputLabel id="genre-label">Genre</InputLabel>
@@ -79,16 +82,14 @@ export default function FilterMoviesCard(props) {
             labelId="genre-label"
             id="genre-select"
             defaultValue=""
-            value={props.genreFilter} // Make sure to pass this prop
-            onChange={handleGenreChange} // Add the event handler
+            value={props.genreFilter} // Pass the current genre filter
+            onChange={handleGenreChange} // Handle changes in the genre dropdown
           >
-            {genres.map((genre) => {
-              return (
-                <MenuItem key={genre.id} value={genre.id}>
-                  {genre.name}
-                </MenuItem>
-              );
-            })}
+            {genres.map((genre) => (
+              <MenuItem key={genre.id} value={genre.id}>
+                {genre.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </CardContent>
@@ -101,7 +102,6 @@ export default function FilterMoviesCard(props) {
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />
           Filter the movies.
-          <br />
         </Typography>
       </CardContent>
     </Card>

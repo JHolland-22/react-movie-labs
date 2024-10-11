@@ -8,18 +8,31 @@ const HomePage = (props) => {
   const [movies, setMovies] = useState([]);
   const [nameFilter, setNameFilter] = useState(""); // State for the name filter
   const [genreFilter, setGenreFilter] = useState("0"); // State for the genre filter
+  const [isLoading, setIsLoading] = useState(true); // Loading state for the fetch request
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&page=1`
     )
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
       .then((json) => {
         console.log(json);
         return json.results;
       })
       .then((movies) => {
         setMovies(movies);
+        setIsLoading(false); // Turn off loading once data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
+        setError(error.message);
+        setIsLoading(false); // Turn off loading in case of error
       });
   }, []);
 
@@ -39,6 +52,15 @@ const HomePage = (props) => {
     if (type === "name") setNameFilter(value);
     else setGenreFilter(value);
   };
+
+  // Display loading or error messages
+  if (isLoading) {
+    return <div>Loading movies...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Grid container>
