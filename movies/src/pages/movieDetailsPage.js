@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getMovie, getMovieImages } from "../api/tmdb-api";
+import React from "react";
+import { useParams } from 'react-router-dom';
+import MovieDetails from "../components/movieDetails/";
+import PageTemplate from "../components/templateMoviePage";
+import useMovie from "../hooks/useMovie";
 
-const MovieDetailsPage = () => {
+const MoviePage = (props) => {
   const { id } = useParams();
-  const [movie, setMovie] = useState(null);
-  const [images, setImages] = useState([]);
-
-  useEffect(() => {
-    getMovie(id).then((movie) => {
-      setMovie(movie);
-    });
-  }, [id]);
-
-  useEffect(() => {
-    getMovieImages(id).then((images) => {
-      setImages(images);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [movie] = useMovie(id);
 
   return (
-    <div>
-      {movie ? <h1>{movie.title}</h1> : <p>Loading...</p>}
-      {images.length > 0 && <p>Images found: {images.length}</p>}
-    </div>
+    <>
+      {movie ? (
+        <>
+          <PageTemplate movie={movie}>
+            <MovieDetails movie={movie} />
+          </PageTemplate>
+        </>
+      ) : (
+        <p>Waiting for movie details</p>
+      )}
+    </>
   );
 };
 
-export default MovieDetailsPage;
+export default MoviePage;
