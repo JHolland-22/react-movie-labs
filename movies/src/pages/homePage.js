@@ -47,6 +47,14 @@ const HomePage = (props) => {
       return genreId > 0 ? m.genre_ids.includes(genreId) : true;
     });
 
+  // Add movie to favorites
+  const addToFavorites = (movieId) => {
+    const updatedMovies = movies.map((m) =>
+      m.id === movieId ? { ...m, favorite: true } : m
+    );
+    setMovies(updatedMovies);
+  };
+
   // Function to handle user input changes
   const handleChange = (type, value) => {
     if (type === "name") setNameFilter(value);
@@ -75,7 +83,7 @@ const HomePage = (props) => {
             genreFilter={genreFilter} // Pass the current genre filter
           />
         </Grid>
-        <MovieList movies={displayedMovies} /> {/* Use displayedMovies for filtering */}
+        <MovieList movies={displayedMovies} selectFavorite={addToFavorites} /> {/* Pass addToFavorites */}
       </Grid>
     </Grid>
   );
