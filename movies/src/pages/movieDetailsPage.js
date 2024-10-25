@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import MovieDetails from '../components/movieDetails'; 
 import PageTemplate from "../components/templateMoviePage";
+import { getMovie, getMovieImages } from "../api/tmdb-api"; // Importing the API functions
 
 const MoviePage = () => {
   const { id } = useParams(); // Get movie ID from URL
@@ -10,25 +11,16 @@ const MoviePage = () => {
 
   // Fetch movie details
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    )
-      .then((res) => res.json())
-      .then((movieData) => {
-        setMovie(movieData);
-      });
+    getMovie(id).then((movieData) => {
+      setMovie(movieData);
+    });
   }, [id]);
 
   // Fetch movie images
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    )
-      .then((res) => res.json())
-      .then((json) => json.posters)
-      .then((imageData) => {
-        setImages(imageData);
-      });
+    getMovieImages(id).then((imageData) => {
+      setImages(imageData);
+    });
     // eslint-disable-next-line
   }, [id]);
 

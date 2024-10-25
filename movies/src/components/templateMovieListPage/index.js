@@ -2,17 +2,21 @@ import React, { useState } from "react";
 import Header from "../headerMovieList";
 import FilterCard from "../filterMoviesCard";
 import MovieList from "../movieList";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 
 function MovieListPageTemplate({ movies = [], title, selectFavorite }) {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
   const genreId = Number(genreFilter);
 
-  // Safely filter the movies array
-  const displayedMovies = movies
-    .filter((m) => m.title && m.title.toLowerCase().includes(nameFilter.toLowerCase()))
-    .filter((m) => genreId > 0 ? m.genre_ids && m.genre_ids.includes(genreId) : true);
+  let displayedMovies = movies
+    .filter((m) => {
+      // Check if m.title exists before calling toLowerCase
+      return m.title && m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
+    })
+    .filter((m) => {
+      return genreId > 0 ? m.genre_ids && m.genre_ids.includes(genreId) : true;
+    });
 
   const handleChange = (type, value) => {
     if (type === "name") setNameFilter(value);
@@ -21,18 +25,13 @@ function MovieListPageTemplate({ movies = [], title, selectFavorite }) {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Header title={title} />
       </Grid>
       <Grid container sx={{ flex: "1 1 500px" }}>
-        <Grid 
-          key="find" 
-          item 
-          xs={12} 
-          sm={6} 
-          md={4} 
-          lg={3} 
-          xl={2} 
+        <Grid
+          key="find"
+          size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
           sx={{ padding: "20px" }}
         >
           <FilterCard
@@ -41,7 +40,7 @@ function MovieListPageTemplate({ movies = [], title, selectFavorite }) {
             genreFilter={genreFilter}
           />
         </Grid>
-        <MovieList selectFavorite={selectFavorite} movies={displayedMovies} />
+        <MovieList selectFavorite={selectFavorite} movies={displayedMovies}></MovieList>
       </Grid>
     </Grid>
   );
