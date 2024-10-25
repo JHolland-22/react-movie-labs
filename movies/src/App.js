@@ -1,35 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import logo from './logo.svg';
-import './App.css';
-import Home from './components/Home'; // Ensure you have this component
-import MovieDetails from './components/MovieDetail'; // Your existing MovieDetails component
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
+import HomePage from "./pages/homePage";
+import MoviePage from "./pages/movieDetailsPage";
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/movie/:id" element={<MovieDetails />} />
-          {/* Add more routes as needed */}
-        </Routes>
-      </div>
-    </Router>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/movies/:id" element={<MoviePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={ <Navigate to="/" /> } />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
-export default App;
+const rootElement = createRoot( document.getElementById("root") )
+rootElement.render(<App />);
