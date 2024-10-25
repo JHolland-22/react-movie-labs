@@ -1,49 +1,52 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
 import MovieList from "../components/movieList";
 import FilterMoviesCard from "../components/filterMoviesCard";
+import Grid from "@mui/material/Grid";
 
-const HomePage = () => {
+const HomePage = (props) => {
   const [movies, setMovies] = useState([]);
-  const [titleFilter, setTitleFilter] = useState("");
-  const [genreFilter, setGenreFilter] = useState("0"); // Default to 'All' genre
+  const [nameFilter, setNameFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("0");
 
-  // Fetching movie data
+  // Fetch movies from API on mount
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&page=1`
     )
       .then((res) => res.json())
-      .then((json) => {
-        setMovies(json.results);
-      })
-      .catch((error) => console.error("Error fetching movies:", error));
+      .then((json) => json.results)
+      .then((movies) => {
+        setMovies(movies);
+      });
   }, []);
 
+  const genreId = Number(genreFilter);
+
   // Filter movies based on title and genre
-  const filteredMovies = movies.filter((movie) => {
-    const titleMatch = movie.title.toLowerCase().includes(titleFilter.toLowerCase());
-    const genreMatch = genreFilter === "0" || movie.genre_ids.includes(Number(genreFilter));
-    return titleMatch && genreMatch;
-  });
+  let displayedMovies = movies
+    .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
+    .filter((m) => (genreId > 0 ? m.genre_ids.includes(genreId) : true));
+
+  // Handle changes to filters
+  const handleChange = (type, value) => {
+    if (type === "name") setNameFilter(value);
+    else setGenreFilter(value);
+  };
 
   return (
     <Grid container>
       <Grid item xs={12}>
-        <h1>HomePage</h1>
+        <h1> HomePage </h1>
       </Grid>
-      <Grid item xs={12} sm={3}>
-        {/* Pass filters to FilterMoviesCard */}
+      <Grid item xs={12}>
         <FilterMoviesCard
-          titleFilter={titleFilter}
+          onUserInput={handleChange}
+          titleFilter={nameFilter}
           genreFilter={genreFilter}
-          setTitleFilter={setTitleFilter}
-          setGenreFilter={setGenreFilter}
         />
       </Grid>
-      <Grid item xs={12} sm={9}>
-        {/* Display filtered movies */}
-        <MovieList movies={filteredMovies} />
+      <Grid item xs={12}>
+        <MovieList movies={displayedMovies} />
       </Grid>
     </Grid>
   );
