@@ -1,4 +1,4 @@
-import React, { useEffect, useState }  from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -18,14 +18,14 @@ export default function MovieReviews({ movie }) {
       setReviews(reviews);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [movie.id]);
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{minWidth: 550}} aria-label="reviews table">
+      <Table sx={{ minWidth: 550 }} aria-label="reviews table">
         <TableHead>
           <TableRow>
-            <TableCell >Author</TableCell>
+            <TableCell>Author</TableCell>
             <TableCell align="center">Excerpt</TableCell>
             <TableCell align="right">More</TableCell>
           </TableRow>
@@ -36,13 +36,13 @@ export default function MovieReviews({ movie }) {
               <TableCell component="th" scope="row">
                 {r.author}
               </TableCell>
-              <TableCell >{excerpt(r.content)}</TableCell>
-              <TableCell >
-              <Link
-                  to={`/reviews/${r.id}`}
+              <TableCell>{excerpt(r.content)}</TableCell>
+              <TableCell>
+                <Link
+                  to={`/reviews/${r.id}`} // Ensure this matches the path defined in App.js
                   state={{
-                      review: r,
-                      movie: movie,
+                    review: r,
+                    movie: movie,
                   }}
                 >
                   Full Review
