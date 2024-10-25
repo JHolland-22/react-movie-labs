@@ -33,6 +33,21 @@ const HomePage = (props) => {
     else setGenreFilter(value);
   };
 
+  // Add to favorites function
+  const addToFavorites = (movieId) => {
+    const updatedMovies = movies.map((m) =>
+      m.id === movieId ? { ...m, favorite: true } : m
+    );
+    setMovies(updatedMovies);
+
+    // Update local storage
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    if (!favorites.includes(movieId)) {
+      favorites.push(movieId);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+    }
+  };
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -46,7 +61,7 @@ const HomePage = (props) => {
         />
       </Grid>
       <Grid item xs={12}>
-        <MovieList movies={displayedMovies} />
+        <MovieList movies={displayedMovies} selectFavorite={addToFavorites} />
       </Grid>
     </Grid>
   );

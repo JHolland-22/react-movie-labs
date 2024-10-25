@@ -2,15 +2,14 @@ import React from "react";
 import PageTemplate from "../components/templateMovieListPage";
 
 const FavoriteMoviesPage = (props) => {
-  const toDo = () => true;
   // Get movies from local storage.
-  const movies = JSON.parse(localStorage.getItem("favorites")); 
+  const movies = JSON.parse(localStorage.getItem("favorites")) || []; 
 
   return (
     <PageTemplate
-      title="Favourite Movies"
+      title="Favorite Movies"
       movies={movies}
-      selectFavorite={toDo}
+      selectFavorite={() => {}} // Placeholder for future functionality
     />
   );
 };
