@@ -1,63 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";           // NEW IMPORT
+import MuiAlert from "@mui/material/Alert";              // NEW IMPORT
+import { useNavigate } from "react-router-dom";          // NEW IMPORT
 import { useForm, Controller } from "react-hook-form";
+import { MoviesContext } from "../../contexts/moviesContext";
 
 const ratings = [
-  {
-    value: 5,
-    label: "Excellent",
-  },
-  {
-    value: 4,
-    label: "Good",
-  },
-  {
-    value: 3,
-    label: "Average",
-  },
-  {
-    value: 2,
-    label: "Poor",
-  },
-  {
-    value: 0,
-    label: "Terrible",
-  },
+  { value: 5, label: "Excellent" },
+  { value: 4, label: "Good" },
+  { value: 3, label: "Average" },
+  { value: 2, label: "Poor" },
+  { value: 0, label: "Terrible" },
 ];
 
 const styles = {
-  root: {
-    marginTop: 2,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "left",
-  },
-  form: {
-    width: "100%",
-    "& > * ": {
-      marginTop: 2,
-    },
-  },
-  textField: {
-    width: "40ch",
-  },
-  submit: {
-    marginRight: 2,
-  },
-  snack: {
-    width: "50%",
-    "& > * ": {
-      width: "100%",
-    },
-  },
+  root: { marginTop: 2, display: "flex", flexDirection: "column", alignItems: "left" },
+  form: { width: "100%", "& > * ": { marginTop: 2 } },
+  textField: { width: "40ch" },
+  submit: { marginRight: 2 },
+  snack: { width: "50%", "& > * ": { width: "100%" } },
 };
 
 const ReviewForm = ({ movie }) => {
+  const context = useContext(MoviesContext);
   const [rating, setRating] = useState(3);
+  const [open, setOpen] = useState(false);               // NEW STATE
+  const navigate = useNavigate();                        // NEW HOOK
   
   const defaultValues = {
     author: "",
@@ -65,7 +38,7 @@ const ReviewForm = ({ movie }) => {
     agree: false,
     rating: "3",
   };
-  
+
   const {
     control,
     formState: { errors },
@@ -77,14 +50,37 @@ const ReviewForm = ({ movie }) => {
     setRating(event.target.value);
   };
 
+  const handleSnackClose = (event) => {                 // NEW FUNCTION
+    setOpen(false);
+    navigate("/movies/favorites");
+  };
+
   const onSubmit = (review) => {
     review.movieId = movie.id;
     review.rating = rating;
-    console.log(review);
+    context.addReview(movie, review);
+    setOpen(true);                                      // NEW
   };
 
   return (
     <Box component="div" sx={styles.root}>
+      <Snackbar                                        // NEW SNACKBAR COMPONENT
+        sx={styles.snack}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open}
+        onClose={handleSnackClose}
+      >
+        <MuiAlert
+          severity="success"
+          variant="filled"
+          onClose={handleSnackClose}
+        >
+          <Typography variant="h4">
+            Thank you for submitting a review
+          </Typography>
+        </MuiAlert>
+      </Snackbar>
+
       <Typography component="h2" variant="h3">
         Write a review
       </Typography>
