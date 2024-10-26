@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -12,16 +12,24 @@ import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
-import Avatar from '@mui/material/Avatar'; // Import Avatar
-import img from '../../images/film-poster-placeholder.png'
+import Avatar from '@mui/material/Avatar';
+import img from '../../images/film-poster-placeholder.png';
+import { MoviesContext } from "../../contexts/moviesContext";
 
-export default function MovieCard(props) {
-  const movie = props.movie;
+export default function MovieCard({ movie }) {
+  const { favorites, addToFavorites } = useContext(MoviesContext);
+
+  // Update movie favorite status based on context
+  if (favorites.find((id) => id === movie.id)) {
+    movie.favorite = true;
+  } else {
+    movie.favorite = false;
+  }
 
   // Event handler for adding to favorites
   const handleAddToFavorite = (e) => {
     e.preventDefault();
-    props.selectFavorite(movie.id);
+    addToFavorites(movie);
   };
 
   return (
@@ -50,13 +58,13 @@ export default function MovieCard(props) {
       />
       <CardContent>
         <Grid container>
-          <Grid size={{ xs: 6 }}>
+          <Grid item xs={6}>
             <Typography variant="h6" component="p">
               <CalendarIcon fontSize="small" />
               {movie.release_date}
             </Typography>
           </Grid>
-          <Grid size={{ xs: 6 }}>
+          <Grid item xs={6}>
             <Typography variant="h6" component="p">
               <StarRateIcon fontSize="small" />
               {"  "} {movie.vote_average}{" "}
@@ -68,7 +76,6 @@ export default function MovieCard(props) {
         <IconButton aria-label="add to favorites" onClick={handleAddToFavorite}>
           <FavoriteIcon color="primary" fontSize="large" />
         </IconButton>
-        {/* Wrap the button in Link for navigation */}
         <Link to={`/movies/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
             More Info ...
