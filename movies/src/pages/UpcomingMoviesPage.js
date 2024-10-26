@@ -1,10 +1,12 @@
-// src/pages/upcomingMoviesPage.js
+// src/pages/UpcomingMoviesPage.js
 import React from 'react';
-import { useQuery } from 'react-query';
 import { getUpcomingMovies } from '../api/tmdb-api';
 import PageTemplate from '../components/templateMovieListPage';
+import { useQuery } from 'react-query';
 import Spinner from '../components/spinner';
-import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+import MovieCard from '../components/movieCard';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'; // Import your icon
+import IconButton from '@mui/material/IconButton'; // Import IconButton
 
 const UpcomingMoviesPage = () => {
   const { data, error, isLoading, isError } = useQuery('upcoming', getUpcomingMovies);
@@ -17,16 +19,17 @@ const UpcomingMoviesPage = () => {
     return <h1>{error.message}</h1>;
   }
 
-  // Safely access data.results
-  const movies = data?.results || []; // Use optional chaining to prevent errors
+  const movies = data?.results || [];
 
   return (
     <PageTemplate
       title="Upcoming Movies"
       movies={movies}
-      action={(movie) => {
-        return <AddToFavoritesIcon movie={movie} />
-      }}
+      action={(movie) => (
+        <IconButton aria-label="add to watchlist">
+          <PlaylistAddIcon />
+        </IconButton>
+      )}
     />
   );
 };

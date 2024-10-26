@@ -1,3 +1,4 @@
+// src/components/MovieCard/index.js
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
@@ -7,7 +8,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite"; // Re-added this import
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
@@ -65,7 +66,7 @@ export default function MovieCard({ movie, action }) {
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-        {action(movie)}
+        {action && action(movie)} {/* Call action only if it exists */}
         <Link to={`/movies/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
             More Info ...
