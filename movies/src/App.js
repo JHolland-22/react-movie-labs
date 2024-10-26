@@ -5,10 +5,10 @@ import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import MovieReviewPage from "./pages/movieReviewPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
+import UpcomingMoviesPage from "./pages/UpcomingMoviesPage"; // Import the new Upcoming Movies page
 import SiteHeader from "./components/siteHeader";
 import MoviesContextProvider from "./contexts/moviesContext";
-import AddMovieReviewPage from './pages/addMovieReviewPage'
-
+import AddMovieReviewPage from './pages/addMovieReviewPage';
 
 const App = () => {
   return (
@@ -22,7 +22,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/reviews/form" element={ <AddMovieReviewPage /> } />
-
+          <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} /> {/* New Upcoming Movies route */}
         </Routes>
       </MoviesContextProvider>
     </BrowserRouter>
