@@ -6,6 +6,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "./index.css"; // Assuming you have global styles
 
+
 // Create a new instance of QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
