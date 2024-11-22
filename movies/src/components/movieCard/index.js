@@ -1,4 +1,3 @@
-// src/components/MovieCard/index.js
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
